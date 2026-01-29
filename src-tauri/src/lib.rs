@@ -192,24 +192,28 @@ async fn get_wechat_token_cached(appid: &str, secret: &str) -> Result<String, St
     }
 
     // 缓存过期或不存在，获取新 token
-    println!("[WeChat] 请求 access_token, appid: {}", appid);
-    let client = reqwest::Client::new();
-
     let body = serde_json::json!({
         "grant_type": "client_credential",
         "appid": appid,
-        "secret": secret
+        "secret": "***"
     });
+    println!("[WeChat] POST https://api.weixin.qq.com/cgi-bin/stable_token, body={}", serde_json::to_string(&body).unwrap());
 
+    let client = reqwest::Client::new();
     let response = client
         .post("https://api.weixin.qq.com/cgi-bin/stable_token")
-        .json(&body)
+        .header("Content-Type", "application/json")
+        .json(&serde_json::json!({
+            "grant_type": "client_credential",
+            "appid": appid,
+            "secret": secret
+        }))
         .send()
         .await
         .map_err(|e| format!("请求 token 失败: {}", e))?;
 
     let text = response.text().await.map_err(|e| format!("读取 token 响应失败: {}", e))?;
-    println!("[WeChat] access_token 响应: {}", text);
+    println!("[WeChat] access_token response: {}", text);
 
     let token_resp: WechatTokenResponse = serde_json::from_str(&text)
         .map_err(|e| format!("解析 token 响应失败: {}", e))?;
@@ -263,26 +267,23 @@ async fn generate_wechat_urllinks(
     let mut results = Vec::new();
 
     for item in items {
-        println!("[WeChat] 生成 URL Link: path={}, query={}", item.path, item.query);
-        let mut params = serde_json::Map::new();
-        params.insert("path".to_string(), serde_json::Value::String(item.path.clone()));
-        params.insert("query".to_string(), serde_json::Value::String(item.query.clone()));
-        params.insert("env_version".to_string(), serde_json::Value::String(env_version.clone()));
-
-        let body = serde_json::Value::Object(params);
+        let body = serde_json::json!({
+            "path": item.path,
+            "query": item.query,
+            "env_version": env_version
+        });
+        println!("[WeChat] POST https://api.weixin.qq.com/wxa/generate_urllink?access_token={}, body={}", token, serde_json::to_string(&body).unwrap());
 
         let response = client
-            .post(&format!(
-                "https://api.weixin.qq.com/wxa/generate_urllink?access_token={}",
-                token
-            ))
+            .post(&format!("https://api.weixin.qq.com/wxa/generate_urllink?access_token={}", token))
+            .header("Content-Type", "application/json")
             .json(&body)
             .send()
             .await
             .map_err(|e| format!("请求失败: {}", e))?;
 
         let text = response.text().await.map_err(|e| format!("读取响应失败: {}", e))?;
-        println!("[WeChat] URL Link 响应: {}", text);
+        println!("[WeChat] urllink response: {}", text);
 
         let link_resp: WechatUrlLinkResponse = serde_json::from_str(&text)
             .map_err(|e| format!("解析响应失败: {}", e))?;

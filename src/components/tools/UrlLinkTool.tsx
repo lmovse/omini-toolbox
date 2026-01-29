@@ -249,7 +249,7 @@ export function UrlLinkTool({ selectedAppId, settings, onSelectApp }: UrlLinkToo
                   >
                     <div className="flex-1 min-w-0">
                       <div className="text-xs text-muted-foreground truncate">
-                        {result.path ? `/${result.path}` : "/"}
+                        {result.path ? `${result.path}` : "/"}
                         {result.query && `?${result.query}`}
                       </div>
                       {result.link ? (
