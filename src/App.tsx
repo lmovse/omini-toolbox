@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { invoke } from "@tauri-apps/api/core";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 import {
   Link,
   Copy,
@@ -78,29 +79,39 @@ function App() {
 
   // Apply theme
   useEffect(() => {
-    const applyTheme = (t: "light" | "dark" | "system") => {
+    const applyTheme = async (t: "light" | "dark" | "system") => {
       const root = document.documentElement;
-      if (t === "dark") {
+      const isDark =
+        t === "dark" ||
+        (t === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+
+      if (isDark) {
         root.classList.add("dark");
-      } else if (t === "light") {
-        root.classList.remove("dark");
       } else {
-        // system
-        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-          root.classList.add("dark");
-        } else {
-          root.classList.remove("dark");
-        }
+        root.classList.remove("dark");
+      }
+
+      // 设置 macOS 标题栏颜色
+      try {
+        const win = getCurrentWindow();
+        await win.setTitleBarStyle("transparent");
+        // 通过 CSS 变量控制颜色
+        document.documentElement.style.setProperty(
+          "--webkit-platform-color",
+          isDark ? "#1c1c1e" : "#ffffff"
+        );
+      } catch (e) {
+        // 非 Tauri 环境忽略
       }
     };
 
-    applyTheme(theme);
+    applyTheme(theme).catch(() => {});
 
     // Listen for system theme changes
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    const handleChange = () => {
+    const handleChange = async () => {
       if (settings.theme === "system" || !settings.theme) {
-        applyTheme("system");
+        await applyTheme("system");
       }
     };
     mediaQuery.addEventListener("change", handleChange);
@@ -323,7 +334,7 @@ function App() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Fixed Header */}
-      <header className="fixed top-0 left-0 right-0 h-14 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50">
+      <header className="fixed top-0 left-0 right-0 h-14 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50 pl-20">
         <div className="h-full px-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
@@ -342,19 +353,20 @@ function App() {
 
       <div className="flex-1 pt-14 flex">
         {/* Left Toolbar Hotbar */}
-        <aside className="fixed left-0 top-14 bottom-0 w-16 border-r bg-background/95 flex flex-col items-center py-4 gap-2 z-40">
+        <aside id="toolbar-nav" className="fixed left-0 top-14 bottom-0 w-16 border-r bg-background/95 flex flex-col items-center py-4 gap-2 z-40">
           {tools.map((tool) => (
             <button
               key={tool.id}
               onClick={() => !tool.comingSoon && setActiveTool(tool.id)}
-              className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
+              className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all relative ${
                 activeTool === tool.id
                   ? "bg-primary text-primary-foreground shadow-sm"
-                  : "hover:bg-muted text-muted-foreground hover:text-foreground"
+                  : "hover:bg-muted"
               } ${tool.comingSoon ? "opacity-50 cursor-not-allowed" : ""}`}
               title={tool.name}
             >
               <tool.icon />
+              <span className="sr-only">{tool.name}</span>
             </button>
           ))}
         </aside>
@@ -575,7 +587,7 @@ function App() {
 
                 <div className="grid gap-6 lg:grid-cols-[240px_1fr]">
                   {/* Settings Navigation */}
-                  <nav className="space-y-1">
+                  <nav id="settings-nav" className="space-y-1">
                     {settingsSections.map((section) => (
                       <button
                         key={section.id}
@@ -583,11 +595,11 @@ function App() {
                         className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
                           activeSettingsSection === section.id
                             ? "bg-primary text-primary-foreground"
-                            : "hover:bg-muted"
+                            : "hover:bg-secondary hover:text-foreground"
                         }`}
                       >
                         <section.icon />
-                        {section.name}
+                        <span>{section.name}</span>
                       </button>
                     ))}
                   </nav>
@@ -609,7 +621,7 @@ function App() {
                           <div className="grid gap-2 sm:grid-cols-3">
                             <button
                               onClick={() => updateTheme("light")}
-                              className={`p-4 rounded-lg border transition-all ${
+                              className={`p-4 rounded-lg border transition-all text-foreground ${
                                 theme === "light"
                                   ? "border-primary bg-primary/5"
                                   : "border-border hover:border-primary/30"
@@ -620,7 +632,7 @@ function App() {
                             </button>
                             <button
                               onClick={() => updateTheme("dark")}
-                              className={`p-4 rounded-lg border transition-all ${
+                              className={`p-4 rounded-lg border transition-all text-foreground ${
                                 theme === "dark"
                                   ? "border-primary bg-primary/5"
                                   : "border-border hover:border-primary/30"
@@ -631,7 +643,7 @@ function App() {
                             </button>
                             <button
                               onClick={() => updateTheme("system")}
-                              className={`p-4 rounded-lg border transition-all ${
+                              className={`p-4 rounded-lg border transition-all text-foreground ${
                                 theme === "system"
                                   ? "border-primary bg-primary/5"
                                   : "border-border hover:border-primary/30"

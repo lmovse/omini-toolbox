@@ -16,7 +16,8 @@
         "width": 1000,
         "height": 700,
         "resizable": true,
-        "decorations": true
+        "decorations": true,
+        "titleBarStyle": "Overlay"
       }
     ],
     "security": {
