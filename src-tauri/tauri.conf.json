@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "tata-tool",
+        "title": "",
         "width": 1000,
         "height": 700,
         "resizable": true,

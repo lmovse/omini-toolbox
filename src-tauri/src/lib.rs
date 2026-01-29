@@ -190,22 +190,24 @@ async fn get_wechat_token_cached(appid: &str, secret: &str) -> Result<String, St
     }
 
     // 缓存过期或不存在，获取新 token
+    println!("[WeChat] 请求 access_token, appid: {}", appid);
     let client = reqwest::Client::new();
 
-    let params = [
-        ("grant_type", "client_credential"),
-        ("appid", appid),
-        ("secret", secret),
-    ];
+    let body = serde_json::json!({
+        "grant_type": "client_credential",
+        "appid": appid,
+        "secret": secret
+    });
 
     let response = client
         .post("https://api.weixin.qq.com/cgi-bin/stable_token")
-        .form(&params)
+        .json(&body)
         .send()
         .await
         .map_err(|e| format!("请求 token 失败: {}", e))?;
 
     let text = response.text().await.map_err(|e| format!("读取 token 响应失败: {}", e))?;
+    println!("[WeChat] access_token 响应: {}", text);
 
     let token_resp: WechatTokenResponse = serde_json::from_str(&text)
         .map_err(|e| format!("解析 token 响应失败: {}", e))?;
@@ -259,6 +261,7 @@ async fn generate_wechat_urllinks(
     let mut results = Vec::new();
 
     for item in items {
+        println!("[WeChat] 生成 URL Link: path={}, query={}", item.path, item.query);
         let mut params = serde_json::Map::new();
         params.insert("path".to_string(), serde_json::Value::String(item.path.clone()));
         params.insert("query".to_string(), serde_json::Value::String(item.query.clone()));
@@ -277,6 +280,7 @@ async fn generate_wechat_urllinks(
             .map_err(|e| format!("请求失败: {}", e))?;
 
         let text = response.text().await.map_err(|e| format!("读取响应失败: {}", e))?;
+        println!("[WeChat] URL Link 响应: {}", text);
 
         let link_resp: WechatUrlLinkResponse = serde_json::from_str(&text)
             .map_err(|e| format!("解析响应失败: {}", e))?;
