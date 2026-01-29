@@ -18,7 +18,7 @@ interface HomeProps {
   setUrlLinkResults: (results: UrlLinkResult[]) => void;
 }
 
-export function Home({ activeTool, setActiveTool, selectedAppId, settings, onSelectApp, urlLinkResults, setUrlLinkResults }: HomeProps) {
+export function Home({ activeTool, selectedAppId, settings, onSelectApp, urlLinkResults, setUrlLinkResults }: HomeProps) {
   return (
     <div className="space-y-6">
       {/* Active Tool Panel */}
