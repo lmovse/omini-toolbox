@@ -39,11 +39,12 @@ interface UrlLinkToolProps {
   selectedAppId: string;
   settings: AppSettings;
   onSelectApp: (id: string) => void;
+  urlLinkResults: UrlLinkResult[];
+  setUrlLinkResults: (results: UrlLinkResult[]) => void;
 }
 
-export function UrlLinkTool({ selectedAppId, settings, onSelectApp }: UrlLinkToolProps) {
+export function UrlLinkTool({ selectedAppId, settings, onSelectApp, urlLinkResults, setUrlLinkResults }: UrlLinkToolProps) {
   const [items, setItems] = useState<ShortLinkItem[]>([{ path: "", query: "" }]);
-  const [results, setResults] = useState<UrlLinkResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [envVersion, setEnvVersion] = useState("release");
@@ -86,7 +87,7 @@ export function UrlLinkTool({ selectedAppId, settings, onSelectApp }: UrlLinkToo
         envVersion,
         items: validItems,
       });
-      setResults(results);
+      setUrlLinkResults(results);
     } catch (error) {
       console.error("生成 URL Link 失败:", error);
       alert(`生成失败: ${error}`);
@@ -102,7 +103,7 @@ export function UrlLinkTool({ selectedAppId, settings, onSelectApp }: UrlLinkToo
   };
 
   const copyAllLinks = () => {
-    const allLinks = results.filter((r) => r.link).map((r) => r.link).join("\n");
+    const allLinks = urlLinkResults.filter((r) => r.link).map((r) => r.link).join("\n");
     if (allLinks) {
       navigator.clipboard.writeText(allLinks);
       setCopied(true);
@@ -221,7 +222,7 @@ export function UrlLinkTool({ selectedAppId, settings, onSelectApp }: UrlLinkToo
           </div>
 
           {/* Results */}
-          {results.length > 0 && (
+          {urlLinkResults.length > 0 && (
             <div className="space-y-3 pt-4 border-t">
               <div className="flex items-center justify-between">
                 <label className="label">生成结果</label>
@@ -240,7 +241,7 @@ export function UrlLinkTool({ selectedAppId, settings, onSelectApp }: UrlLinkToo
                 </button>
               </div>
               <div className="space-y-2 max-h-64 overflow-y-auto">
-                {results.map((result, index) => (
+                {urlLinkResults.map((result, index) => (
                   <div
                     key={index}
                     className={`flex items-center gap-2 p-3 rounded-lg ${

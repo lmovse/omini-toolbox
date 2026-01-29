@@ -33,11 +33,19 @@ interface AppSettings {
 
 type SettingsSection = "general" | "wechat" | "about";
 
+interface UrlLinkResult {
+  path: string;
+  query: string;
+  link: string;
+  err_msg: string;
+}
+
 function App() {
   const [currentPage, setCurrentPage] = useState<"home" | "settings">("home");
   const [activeTool, setActiveTool] = useState<string>("urllink");
   const [selectedAppId, setSelectedAppId] = useState<string>("");
   const [activeSettingsSection, setActiveSettingsSection] = useState<SettingsSection>("wechat");
+  const [urlLinkResults, setUrlLinkResults] = useState<UrlLinkResult[]>([]);
 
   // Settings state
   const [settings, setSettings] = useState<AppSettings>({
@@ -183,6 +191,8 @@ function App() {
                 selectedAppId={selectedAppId}
                 settings={settings}
                 onSelectApp={setSelectedAppId}
+                urlLinkResults={urlLinkResults}
+                setUrlLinkResults={setUrlLinkResults}
               />
             )}
 
