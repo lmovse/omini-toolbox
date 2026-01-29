@@ -35,11 +35,11 @@
     --popover-foreground: 0 0% 98%;
     --primary: 0 0% 98%;
     --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 4% 8%;
+    --secondary: 240 6% 15%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 240 0% 91%;
+    --muted: 240 3% 15%;
     --muted-foreground: 240 5% 64.9%;
-    --accent: 240 4% 8%;
+    --accent: 240 6% 15%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
@@ -57,16 +57,6 @@
     @apply bg-background text-foreground;
     font-family: 'Inter', system-ui, sans-serif;
   }
-}
-
-/* 修复暗色模式下 hover 文字颜色 - 深色文字 */
-html.dark #settings-nav button:not(.bg-primary):hover,
-html.dark #settings-nav button:not(.bg-primary):hover span {
-  color: #0a0a0a !important;
-}
-
-html.dark #toolbar-nav button:not(.bg-primary):hover {
-  color: #0a0a0a !important;
 }
 
 /* Bento Box Grid Layout */
