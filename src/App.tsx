@@ -43,6 +43,7 @@ interface MiniAppConfig {
 interface AppSettings {
   mini_apps: MiniAppConfig[];
   default_app_id: string | null;
+  theme: "light" | "dark" | "system" | null;
 }
 
 type SettingsSection = "general" | "wechat" | "about";
@@ -62,6 +63,7 @@ function App() {
   const [settings, setSettings] = useState<AppSettings>({
     mini_apps: [],
     default_app_id: null,
+    theme: null,
   });
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingApp, setEditingApp] = useState<MiniAppConfig | null>(null);
@@ -70,6 +72,40 @@ function App() {
     appid: "",
     secret: "",
   });
+
+  // Theme state
+  const [theme, setTheme] = useState<"light" | "dark" | "system">("system");
+
+  // Apply theme
+  useEffect(() => {
+    const applyTheme = (t: "light" | "dark" | "system") => {
+      const root = document.documentElement;
+      if (t === "dark") {
+        root.classList.add("dark");
+      } else if (t === "light") {
+        root.classList.remove("dark");
+      } else {
+        // system
+        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+          root.classList.add("dark");
+        } else {
+          root.classList.remove("dark");
+        }
+      }
+    };
+
+    applyTheme(theme);
+
+    // Listen for system theme changes
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleChange = () => {
+      if (settings.theme === "system" || !settings.theme) {
+        applyTheme("system");
+      }
+    };
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, [theme, settings.theme]);
 
   // Load settings on mount
   useEffect(() => {
@@ -82,6 +118,9 @@ function App() {
       setSettings(loaded);
       if (loaded.default_app_id) {
         setSelectedAppId(loaded.default_app_id);
+      }
+      if (loaded.theme) {
+        setTheme(loaded.theme as "light" | "dark" | "system");
       }
     } catch (error) {
       console.error("加载设置失败:", error);
@@ -166,6 +205,15 @@ function App() {
     };
     await saveSettings(newSettings);
     setSelectedAppId(id);
+  };
+
+  const updateTheme = async (newTheme: "light" | "dark" | "system") => {
+    setTheme(newTheme);
+    const newSettings: AppSettings = {
+      ...settings,
+      theme: newTheme,
+    };
+    await saveSettings(newSettings);
   };
 
   const startEdit = (app: MiniAppConfig) => {
@@ -555,8 +603,44 @@ function App() {
                           </div>
                           <h3 className="font-medium">外观</h3>
                         </div>
-                        <div className="p-4 bg-muted/30 rounded-lg text-sm text-muted-foreground">
-                          外观设置功能开发中...
+
+                        <div className="space-y-3">
+                          <label className="label">主题</label>
+                          <div className="grid gap-2 sm:grid-cols-3">
+                            <button
+                              onClick={() => updateTheme("light")}
+                              className={`p-4 rounded-lg border transition-all ${
+                                theme === "light"
+                                  ? "border-primary bg-primary/5"
+                                  : "border-border hover:border-primary/30"
+                              }`}
+                            >
+                              <div className="w-8 h-8 rounded-full bg-white border shadow-sm mx-auto mb-2" />
+                              <div className="text-sm font-medium">浅色</div>
+                            </button>
+                            <button
+                              onClick={() => updateTheme("dark")}
+                              className={`p-4 rounded-lg border transition-all ${
+                                theme === "dark"
+                                  ? "border-primary bg-primary/5"
+                                  : "border-border hover:border-primary/30"
+                              }`}
+                            >
+                              <div className="w-8 h-8 rounded-full bg-gray-900 border border-gray-700 mx-auto mb-2" />
+                              <div className="text-sm font-medium">深色</div>
+                            </button>
+                            <button
+                              onClick={() => updateTheme("system")}
+                              className={`p-4 rounded-lg border transition-all ${
+                                theme === "system"
+                                  ? "border-primary bg-primary/5"
+                                  : "border-border hover:border-primary/30"
+                              }`}
+                            >
+                              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-white to-gray-900 border shadow-sm mx-auto mb-2" />
+                              <div className="text-sm font-medium">跟随系统</div>
+                            </button>
+                          </div>
                         </div>
                       </div>
                     )}

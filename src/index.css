@@ -68,13 +68,13 @@
 }
 
 .bento-card {
-  @apply bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm;
+  @apply bg-card text-card-foreground rounded-xl border border-border shadow-sm;
   @apply transition-all duration-200;
   @apply hover:shadow-md hover:border-primary/30;
 }
 
 .bento-card-header {
-  @apply flex items-center gap-3 px-4 py-3 border-b border-gray-100 dark:border-gray-700;
+  @apply flex items-center gap-3 px-4 py-3 border-b border-border;
 }
 
 .bento-card-title {
