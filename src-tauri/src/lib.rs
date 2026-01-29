@@ -47,6 +47,7 @@ pub struct ShortLinkItem {
 }
 
 // Token 缓存结构
+#[derive(Clone)]
 struct TokenCache {
     appid: String,
     token: String,
@@ -121,14 +122,48 @@ fn save_settings(settings: AppSettings) -> Result<(), String> {
         .map_err(|e| format!("保存设置失败: {}", e))
 }
 
-/// 获取微信 access token (带缓存)
+fn get_token_cache_path() -> PathBuf {
+    let mut path = get_config_dir();
+    path.push("token_cache.json");
+    path
+}
+
+#[derive(Serialize, Deserialize)]
+struct TokenCacheFile {
+    appid: String,
+    token: String,
+    expires_at: u64,
+}
+
+/// 加载 token 缓存（从磁盘）
+fn load_token_cache() -> Option<TokenCacheFile> {
+    let path = get_token_cache_path();
+    if !path.exists() {
+        return None;
+    }
+
+    let content = fs::read_to_string(&path).ok()?;
+    serde_json::from_str(&content).ok()
+}
+
+/// 保存 token 缓存（到磁盘）
+fn save_token_cache(cache: &TokenCacheFile) -> Result<(), String> {
+    let path = get_token_cache_path();
+    let content = serde_json::to_string_pretty(cache)
+        .map_err(|e| format!("序列化 token 缓存失败: {}", e))?;
+
+    fs::write(&path, content)
+        .map_err(|e| format!("保存 token 缓存失败: {}", e))
+}
+
+/// 获取微信 access token (带缓存，持久化到磁盘)
 async fn get_wechat_token_cached(appid: &str, secret: &str) -> Result<String, String> {
     let now = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .map_err(|e| format!("获取时间失败: {}", e))?
         .as_secs();
 
-    // 检查缓存
+    // 检查缓存（先从磁盘加载，再检查内存）
     {
         let cache = TOKEN_CACHE.lock().map_err(|e| format!("锁获取失败: {}", e))?;
         if let Some(cached) = cache.as_ref() {
@@ -136,6 +171,21 @@ async fn get_wechat_token_cached(appid: &str, secret: &str) -> Result<String, St
                 // 缓存有效，剩余时间大于 60 秒
                 return Ok(cached.token.clone());
             }
+        }
+    }
+
+    // 检查磁盘缓存
+    if let Some(disk_cache) = load_token_cache() {
+        if disk_cache.appid == appid && disk_cache.expires_at > now + 60 {
+            let token = disk_cache.token.clone();
+            // 磁盘缓存有效，更新内存缓存
+            let mut cache = TOKEN_CACHE.lock().map_err(|e| format!("锁获取失败: {}", e))?;
+            *cache = Some(TokenCache {
+                appid: disk_cache.appid,
+                token: token.clone(),
+                expires_at: disk_cache.expires_at,
+            });
+            return Ok(token);
         }
     }
 
@@ -165,15 +215,25 @@ async fn get_wechat_token_cached(appid: &str, secret: &str) -> Result<String, St
         let expires_in = token_resp.expires_in.unwrap_or(7200);
         let expires_at = now + expires_in.saturating_sub(60);
 
-        // 更新缓存
         let new_cache = TokenCache {
             appid: appid.to_string(),
             token: token.clone(),
             expires_at,
         };
 
-        let mut cache = TOKEN_CACHE.lock().map_err(|e| format!("锁获取失败: {}", e))?;
-        *cache = Some(new_cache);
+        // 更新内存缓存
+        {
+            let mut cache = TOKEN_CACHE.lock().map_err(|e| format!("锁获取失败: {}", e))?;
+            *cache = Some(new_cache.clone());
+        }
+
+        // 持久化到磁盘
+        let disk_cache = TokenCacheFile {
+            appid: new_cache.appid,
+            token: new_cache.token,
+            expires_at: new_cache.expires_at,
+        };
+        let _ = save_token_cache(&disk_cache);
 
         Ok(token)
     } else {
