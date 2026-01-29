@@ -2,5 +2,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    tata_tool_lib::run()
+    omini_toolbox_lib::run()
 }
