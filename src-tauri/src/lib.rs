@@ -272,7 +272,7 @@ async fn generate_wechat_urllinks(
             "query": item.query,
             "env_version": env_version
         });
-        println!("[WeChat] POST https://api.weixin.qq.com/wxa/generate_urllink?access_token={}, body={}", token, serde_json::to_string(&body).unwrap());
+        println!("[WeChat] POST https://api.weixin.qq.com/wxa/generate_urllink?access_token=***, body={}", serde_json::to_string(&body).unwrap());
 
         let response = client
             .post(&format!("https://api.weixin.qq.com/wxa/generate_urllink?access_token={}", token))

@@ -130,10 +130,10 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      {/* Fixed Header */}
+    <div className="h-screen bg-background flex flex-col">
+      {/* Header */}
       <header
-        className="fixed top-0 left-0 right-0 h-14 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50 pl-20"
+        className="flex-shrink-0 h-14 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50 pl-20"
         onMouseDown={handleHeaderClick}
       >
         <div className="h-full px-6 flex items-center justify-between">
@@ -152,7 +152,7 @@ function App() {
         </div>
       </header>
 
-      <div className="flex-1 pt-14 flex">
+      <div className="flex-1 flex overflow-hidden">
         {/* Left Toolbar Hotbar */}
         <aside id="toolbar-nav" className="fixed left-0 top-14 bottom-0 w-16 border-r bg-background/95 flex flex-col items-center py-4 gap-2 z-40">
           {tools.map((tool) => (
