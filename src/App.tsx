@@ -1,11 +1,21 @@
 import { useState, useEffect } from "react";
 import { invoke } from "@tauri-apps/api/core";
-import { getCurrentWindow } from "@tauri-apps/api/window";
+import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { Settings as SettingsIcon } from "lucide-react";
 
 import { Home } from "./pages/Home";
 import { Settings } from "./pages/Settings";
 import { tools } from "./components/ToolCard";
+
+// 拖动处理函数
+function handleHeaderClick(e: React.MouseEvent) {
+  if (e.button !== 0) return;
+  const el = e.target as HTMLElement;
+  if (el.closest('[data-tauri-drag-region="false"]')) return;
+
+  const win = getCurrentWebviewWindow();
+  win.startDragging();
+}
 
 interface MiniAppConfig {
   id: string;
@@ -55,7 +65,7 @@ function App() {
 
       // 设置 macOS 标题栏颜色
       try {
-        const win = getCurrentWindow();
+        const win = getCurrentWebviewWindow();
         await win.setTitleBarStyle("transparent");
         // 通过 CSS 变量控制颜色
         document.documentElement.style.setProperty(
@@ -122,7 +132,10 @@ function App() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Fixed Header */}
-      <header className="fixed top-0 left-0 right-0 h-14 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50 pl-20">
+      <header
+        className="fixed top-0 left-0 right-0 h-14 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50 pl-20"
+        onMouseDown={handleHeaderClick}
+      >
         <div className="h-full px-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
