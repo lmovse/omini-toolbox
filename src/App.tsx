@@ -139,9 +139,9 @@ function App() {
         <div className="h-full px-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-sm">TT</span>
+              <span className="text-primary-foreground font-bold text-sm">OT</span>
             </div>
-            <h1 className="text-lg font-semibold">Tata ToolBox</h1>
+            <h1 className="text-lg font-semibold">Omini ToolBox</h1>
           </div>
           <button
             onClick={() => setCurrentPage("settings")}

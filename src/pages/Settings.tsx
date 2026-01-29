@@ -384,10 +384,10 @@ export function Settings({
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center">
-                  <span className="text-primary-foreground font-bold">TT</span>
+                  <span className="text-primary-foreground font-bold">OT</span>
                 </div>
                 <div>
-                  <h3 className="font-medium">Tata ToolBox</h3>
+                  <h3 className="font-medium">Omini ToolBox</h3>
                   <p className="text-sm text-muted-foreground">版本 0.1.0</p>
                 </div>
               </div>
