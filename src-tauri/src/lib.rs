@@ -271,7 +271,7 @@ async fn generate_wechat_urllinks(
 
         let response = client
             .post(&format!(
-                "https://api.weixin.qq.com/wxa/genwxurlink?access_token={}",
+                "https://api.weixin.qq.com/wxa/generate_urllink?access_token={}",
                 token
             ))
             .json(&body)
