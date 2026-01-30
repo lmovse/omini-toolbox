@@ -122,7 +122,7 @@ export function UrlLinkTool({ selectedAppId, settings, onSelectApp, urlLinkResul
           </div>
           <div>
             <h3 className="bento-card-title">{t("urlLinkTool.title")}</h3>
-            <p className="text-xs text-muted-foreground">Generate WeChat Mini Program URL Link</p>
+            <p className="text-xs text-muted-foreground">{t("urlLinkTool.generateUrlLinkDesc")}</p>
           </div>
         </div>
 

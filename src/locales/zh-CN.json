@@ -35,10 +35,17 @@
     "editMiniApp": "编辑小程序",
     "name": "名称",
     "setAsDefault": "设为默认",
-    "cancelDefault": "取消默认"
+    "cancelDefault": "取消默认",
+    "configureAppOptions": "配置应用选项",
+    "wechatApiDesc": "配置微信小程序 API 凭证，用于 URL Link 生成等工具",
+    "configuredMiniPrograms": "已配置的小程序",
+    "noMiniPrograms": "还没有配置小程序",
+    "addFirstMiniProgram": "点击上方按钮添加你的第一个小程序",
+    "builtWithReactTauri": "基于 React + Tauri 构建"
   },
   "urlLinkTool": {
     "title": "生成 URL Link",
+    "generateUrlLinkDesc": "生成微信小程序 URL Link",
     "selectConfig": "选择小程序",
     "path": "路径",
     "pathPlaceholder": "/pages/index/index",

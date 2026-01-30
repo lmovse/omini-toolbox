@@ -153,7 +153,7 @@ export function Settings({
       {/* Settings Header */}
       <div className="pb-4 border-b">
         <h2 className="text-xl font-semibold">{t("settings.title")}</h2>
-        <p className="text-sm text-muted-foreground">Configure app options</p>
+        <p className="text-sm text-muted-foreground">{t("settings.configureAppOptions")}</p>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[240px_1fr]">
@@ -269,13 +269,13 @@ export function Settings({
                 <h3 className="font-medium">{t("settings.miniProgramConfig")}</h3>
               </div>
               <p className="text-sm text-muted-foreground">
-                Configure WeChat Mini Program API credentials for URL Link generation
+                {t("settings.wechatApiDesc")}
               </p>
 
               {/* App List */}
               {settings.mini_apps.length > 0 && (
                 <div className="space-y-2">
-                  <label className="label">Configured Mini Programs</label>
+                  <label className="label">{t("settings.configuredMiniPrograms")}</label>
                   <div className="space-y-2">
                     {settings.mini_apps.map((app) => (
                       <div
@@ -411,8 +411,8 @@ export function Settings({
               {settings.mini_apps.length === 0 && !showAddForm && (
                 <div className="text-center py-8 text-muted-foreground">
                   <Database className="w-12 h-12 mx-auto mb-3 opacity-30" />
-                  <p>No Mini Programs configured</p>
-                  <p className="text-sm">Click the button above to add your first Mini Program</p>
+                  <p>{t("settings.noMiniPrograms")}</p>
+                  <p className="text-sm">{t("settings.addFirstMiniProgram")}</p>
                 </div>
               )}
             </div>
@@ -435,7 +435,7 @@ export function Settings({
               </p>
               <div className="pt-4 border-t">
                 <p className="text-xs text-muted-foreground">
-                  Built with React + Tauri
+                  {t("settings.builtWithReactTauri")}
                 </p>
               </div>
             </div>

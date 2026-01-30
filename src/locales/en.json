@@ -35,10 +35,17 @@
     "editMiniApp": "Edit Mini Program",
     "name": "Name",
     "setAsDefault": "Set as Default",
-    "cancelDefault": "Cancel Default"
+    "cancelDefault": "Cancel Default",
+    "configureAppOptions": "Configure app options",
+    "wechatApiDesc": "Configure WeChat Mini Program API credentials for URL Link generation",
+    "configuredMiniPrograms": "Configured Mini Programs",
+    "noMiniPrograms": "No Mini Programs configured",
+    "addFirstMiniProgram": "Click the button above to add your first Mini Program",
+    "builtWithReactTauri": "Built with React + Tauri"
   },
   "urlLinkTool": {
     "title": "Generate URL Link",
+    "generateUrlLinkDesc": "Generate WeChat Mini Program URL Link",
     "selectConfig": "Select Mini Program",
     "path": "Path",
     "pathPlaceholder": "/pages/index/index",
