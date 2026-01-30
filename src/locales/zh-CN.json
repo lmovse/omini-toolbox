@@ -1,0 +1,73 @@
+{
+  "app": {
+    "title": "Omini ToolBox"
+  },
+  "nav": {
+    "home": "首页",
+    "settings": "设置"
+  },
+  "home": {
+    "title": "工具",
+    "comingSoon": "即将上线"
+  },
+  "settings": {
+    "title": "设置",
+    "general": "通用",
+    "wechat": "微信",
+    "about": "关于",
+    "theme": "主题",
+    "themeLight": "浅色",
+    "themeDark": "深色",
+    "themeSystem": "跟随系统",
+    "language": "语言",
+    "languageEn": "English",
+    "languageZh": "中文",
+    "miniProgramConfig": "小程序配置",
+    "addConfig": "添加配置",
+    "appId": "AppID",
+    "appSecret": "AppSecret",
+    "delete": "删除",
+    "save": "保存",
+    "cancel": "取消",
+    "confirm": "确认",
+    "version": "版本",
+    "aboutDesc": "一个基于 Tauri + React 构建的跨平台桌面工具箱",
+    "editMiniApp": "编辑小程序",
+    "name": "名称",
+    "setAsDefault": "设为默认",
+    "cancelDefault": "取消默认"
+  },
+  "urlLinkTool": {
+    "title": "生成 URL Link",
+    "selectConfig": "选择小程序",
+    "path": "路径",
+    "pathPlaceholder": "/pages/index/index",
+    "query": "查询参数（可选）",
+    "queryPlaceholder": "key1=value1&key2=value2",
+    "generate": "生成",
+    "generatedLink": "生成的链接",
+    "copyLink": "复制链接",
+    "copySuccess": "已复制到剪贴板",
+    "generateFailed": "生成失败",
+    "expireDate": "过期时间",
+    "oneDay": "1 天",
+    "sevenDays": "7 天",
+    "thirtyDays": "30 天",
+    "ninetyDays": "90 天",
+    "selectMiniProgram": "请选择小程序",
+    "fillAtLeastOnePath": "请至少填写一个路径",
+    "generating": "生成中",
+    "copyAll": "复制全部",
+    "copied": "已复制",
+    "version": "版本",
+    "pathAndParams": "路径与参数配置",
+    "add": "添加",
+    "failed": "失败"
+  },
+  "common": {
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功",
+    "failed": "失败"
+  }
+}

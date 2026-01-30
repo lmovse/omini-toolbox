@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Settings as SettingsIcon,
   Globe,
@@ -10,6 +11,7 @@ import {
   StarOff,
   Database,
   Palette,
+  Languages,
 } from "lucide-react";
 
 interface MiniAppConfig {
@@ -24,6 +26,7 @@ interface AppSettings {
   mini_apps: MiniAppConfig[];
   default_app_id: string | null;
   theme: "light" | "dark" | "system" | null;
+  language: string | null;
 }
 
 interface SettingsProps {
@@ -32,6 +35,8 @@ interface SettingsProps {
   activeSettingsSection: string;
   onUpdateSettings: (newSettings: AppSettings) => void;
   onUpdateTheme: (theme: "light" | "dark" | "system") => void;
+  onUpdateLanguage: (lng: string) => void;
+  currentLanguage: string;
   onSetActiveSection: (section: string) => void;
   onGoHome: () => void;
   onSelectApp: (id: string) => void;
@@ -40,9 +45,9 @@ interface SettingsProps {
 type SettingsSection = "general" | "wechat" | "about";
 
 const settingsSections = [
-  { id: "general" as SettingsSection, name: "通用", icon: () => <SettingsIcon className="w-5 h-5" /> },
-  { id: "wechat" as SettingsSection, name: "微信相关", icon: () => <Globe className="w-5 h-5" /> },
-  { id: "about" as SettingsSection, name: "关于", icon: () => <Home className="w-5 h-5" /> },
+  { id: "general" as SettingsSection, name: "settings.general", icon: () => <SettingsIcon className="w-5 h-5" /> },
+  { id: "wechat" as SettingsSection, name: "settings.wechat", icon: () => <Globe className="w-5 h-5" /> },
+  { id: "about" as SettingsSection, name: "settings.about", icon: () => <Home className="w-5 h-5" /> },
 ];
 
 export function Settings({
@@ -51,10 +56,13 @@ export function Settings({
   activeSettingsSection,
   onUpdateSettings,
   onUpdateTheme,
+  onUpdateLanguage,
+  currentLanguage,
   onSetActiveSection,
   onGoHome,
   onSelectApp,
 }: SettingsProps) {
+  const { t } = useTranslation();
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingApp, setEditingApp] = useState<MiniAppConfig | null>(null);
   const [formData, setFormData] = useState({
@@ -139,13 +147,13 @@ export function Settings({
       {/* Back Button */}
       <button onClick={onGoHome} className="button-ghost text-sm mb-2">
         <Home className="w-4 h-4 mr-1" />
-        返回首页
+        {t("nav.home")}
       </button>
 
       {/* Settings Header */}
       <div className="pb-4 border-b">
-        <h2 className="text-xl font-semibold">设置</h2>
-        <p className="text-sm text-muted-foreground">配置应用选项</p>
+        <h2 className="text-xl font-semibold">{t("settings.title")}</h2>
+        <p className="text-sm text-muted-foreground">Configure app options</p>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[240px_1fr]">
@@ -162,7 +170,7 @@ export function Settings({
               }`}
             >
               <section.icon />
-              <span>{section.name}</span>
+              <span>{t(section.name)}</span>
             </button>
           ))}
         </nav>
@@ -176,11 +184,12 @@ export function Settings({
                 <div className="tool-icon bg-blue-500/10 text-blue-600">
                   <Palette className="w-5 h-5" />
                 </div>
-                <h3 className="font-medium">外观</h3>
+                <h3 className="font-medium">{t("settings.general")}</h3>
               </div>
 
+              {/* Theme */}
               <div className="space-y-3">
-                <label className="label">主题</label>
+                <label className="label">{t("settings.theme")}</label>
                 <div className="grid gap-2 sm:grid-cols-3">
                   <button
                     onClick={() => onUpdateTheme("light")}
@@ -191,7 +200,7 @@ export function Settings({
                     }`}
                   >
                     <div className="w-8 h-8 rounded-full bg-white border shadow-sm mx-auto mb-2" />
-                    <div className="text-sm font-medium">浅色</div>
+                    <div className="text-sm font-medium">{t("settings.themeLight")}</div>
                   </button>
                   <button
                     onClick={() => onUpdateTheme("dark")}
@@ -202,7 +211,7 @@ export function Settings({
                     }`}
                   >
                     <div className="w-8 h-8 rounded-full bg-gray-900 border border-gray-700 mx-auto mb-2" />
-                    <div className="text-sm font-medium">深色</div>
+                    <div className="text-sm font-medium">{t("settings.themeDark")}</div>
                   </button>
                   <button
                     onClick={() => onUpdateTheme("system")}
@@ -213,7 +222,37 @@ export function Settings({
                     }`}
                   >
                     <div className="w-8 h-8 rounded-full bg-gradient-to-r from-white to-gray-900 border shadow-sm mx-auto mb-2" />
-                    <div className="text-sm font-medium">跟随系统</div>
+                    <div className="text-sm font-medium">{t("settings.themeSystem")}</div>
+                  </button>
+                </div>
+              </div>
+
+              {/* Language */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <Languages className="w-5 h-5 text-muted-foreground" />
+                  <label className="label">{t("settings.language")}</label>
+                </div>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  <button
+                    onClick={() => onUpdateLanguage("en")}
+                    className={`p-4 rounded-lg border transition-all text-foreground ${
+                      currentLanguage === "en"
+                        ? "border-primary bg-primary/5"
+                        : "border-border hover:border-primary/30"
+                    }`}
+                  >
+                    <div className="text-sm font-medium">{t("settings.languageEn")}</div>
+                  </button>
+                  <button
+                    onClick={() => onUpdateLanguage("zh-CN")}
+                    className={`p-4 rounded-lg border transition-all text-foreground ${
+                      currentLanguage === "zh-CN"
+                        ? "border-primary bg-primary/5"
+                        : "border-border hover:border-primary/30"
+                    }`}
+                  >
+                    <div className="text-sm font-medium">{t("settings.languageZh")}</div>
                   </button>
                 </div>
               </div>
@@ -227,16 +266,16 @@ export function Settings({
                 <div className="tool-icon bg-green-500/10 text-green-600">
                   <Database className="w-5 h-5" />
                 </div>
-                <h3 className="font-medium">小程序配置</h3>
+                <h3 className="font-medium">{t("settings.miniProgramConfig")}</h3>
               </div>
               <p className="text-sm text-muted-foreground">
-                配置微信小程序 API 凭证，用于 URL Link 生成等工具
+                Configure WeChat Mini Program API credentials for URL Link generation
               </p>
 
               {/* App List */}
               {settings.mini_apps.length > 0 && (
                 <div className="space-y-2">
-                  <label className="label">已配置的小程序</label>
+                  <label className="label">Configured Mini Programs</label>
                   <div className="space-y-2">
                     {settings.mini_apps.map((app) => (
                       <div
@@ -266,7 +305,7 @@ export function Settings({
                               : setDefaultApp(app.id)
                           }
                           className="button-ghost p-2"
-                          title={settings.default_app_id === app.id ? "取消默认" : "设为默认"}
+                          title={settings.default_app_id === app.id ? t("settings.cancelDefault") : t("settings.setAsDefault")}
                         >
                           {settings.default_app_id === app.id ? (
                             <Star className="w-4 h-4 text-yellow-500" />
@@ -296,15 +335,15 @@ export function Settings({
               {(showAddForm || editingApp) && (
                 <div className="p-4 bg-muted/50 rounded-lg space-y-4">
                   <h4 className="font-medium">
-                    {editingApp ? "编辑小程序" : "添加小程序"}
+                    {editingApp ? t("urlLinkTool.editMiniApp") : t("settings.addConfig")}
                   </h4>
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-2">
-                      <label className="label">名称 *</label>
+                      <label className="label">{t("urlLinkTool.name")} *</label>
                       <input
                         type="text"
                         className="input"
-                        placeholder="例如：我的小程序"
+                        placeholder="My Mini Program"
                         value={formData.name}
                         onChange={(e) =>
                           setFormData({ ...formData, name: e.target.value })
@@ -312,11 +351,11 @@ export function Settings({
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="label">AppID *</label>
+                      <label className="label">{t("settings.appId")} *</label>
                       <input
                         type="text"
                         className="input"
-                        placeholder="例如：wx1234567890"
+                        placeholder="wx1234567890"
                         value={formData.appid}
                         onChange={(e) =>
                           setFormData({ ...formData, appid: e.target.value })
@@ -324,11 +363,11 @@ export function Settings({
                       />
                     </div>
                     <div className="space-y-2 sm:col-span-2">
-                      <label className="label">AppSecret *</label>
+                      <label className="label">{t("settings.appSecret")} *</label>
                       <input
                         type="password"
                         className="input"
-                        placeholder="在微信后台获取的 AppSecret"
+                        placeholder="AppSecret from WeChat Admin"
                         value={formData.secret}
                         onChange={(e) =>
                           setFormData({ ...formData, secret: e.target.value })
@@ -341,7 +380,7 @@ export function Settings({
                       onClick={editingApp ? updateApp : addApp}
                       className="button-primary"
                     >
-                      {editingApp ? "保存修改" : "添加"}
+                      {editingApp ? t("settings.save") : t("settings.addConfig")}
                     </button>
                     <button
                       onClick={() => {
@@ -351,7 +390,7 @@ export function Settings({
                       }}
                       className="button-secondary"
                     >
-                      取消
+                      {t("settings.cancel")}
                     </button>
                   </div>
                 </div>
@@ -364,7 +403,7 @@ export function Settings({
                   className="button-primary w-full"
                 >
                   <Plus className="w-4 h-4 mr-2" />
-                  添加小程序
+                  {t("settings.addConfig")}
                 </button>
               )}
 
@@ -372,8 +411,8 @@ export function Settings({
               {settings.mini_apps.length === 0 && !showAddForm && (
                 <div className="text-center py-8 text-muted-foreground">
                   <Database className="w-12 h-12 mx-auto mb-3 opacity-30" />
-                  <p>还没有配置小程序</p>
-                  <p className="text-sm">点击上方按钮添加你的第一个小程序</p>
+                  <p>No Mini Programs configured</p>
+                  <p className="text-sm">Click the button above to add your first Mini Program</p>
                 </div>
               )}
             </div>
@@ -388,11 +427,11 @@ export function Settings({
                 </div>
                 <div>
                   <h3 className="font-medium">Omini ToolBox</h3>
-                  <p className="text-sm text-muted-foreground">版本 0.1.0</p>
+                  <p className="text-sm text-muted-foreground">{t("settings.version")} 0.1.0</p>
                 </div>
               </div>
               <p className="text-sm text-muted-foreground">
-                一个实用的工具箱应用，支持多种常用工具的快捷生成。
+                {t("settings.aboutDesc")}
               </p>
               <div className="pt-4 border-t">
                 <p className="text-xs text-muted-foreground">

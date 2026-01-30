@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { invoke } from "@tauri-apps/api/core";
 import {
   Link,
@@ -44,6 +45,7 @@ interface UrlLinkToolProps {
 }
 
 export function UrlLinkTool({ selectedAppId, settings, onSelectApp, urlLinkResults, setUrlLinkResults }: UrlLinkToolProps) {
+  const { t } = useTranslation();
   const [items, setItems] = useState<ShortLinkItem[]>([{ path: "", query: "" }]);
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -69,13 +71,13 @@ export function UrlLinkTool({ selectedAppId, settings, onSelectApp, urlLinkResul
 
   const generateUrlLinks = async () => {
     if (!selectedApp) {
-      alert("请选择一个小程序");
+      alert(t("urlLinkTool.selectMiniProgram"));
       return;
     }
 
     const validItems = items.filter((item) => item.path.trim() !== "");
     if (validItems.length === 0) {
-      alert("请至少填写一个路径");
+      alert(t("urlLinkTool.fillAtLeastOnePath"));
       return;
     }
 
@@ -89,8 +91,8 @@ export function UrlLinkTool({ selectedAppId, settings, onSelectApp, urlLinkResul
       });
       setUrlLinkResults(results);
     } catch (error) {
-      console.error("生成 URL Link 失败:", error);
-      alert(`生成失败: ${error}`);
+      console.error(t("urlLinkTool.generateFailed"), error);
+      alert(`${t("urlLinkTool.generateFailed")}: ${error}`);
     } finally {
       setLoading(false);
     }
@@ -119,55 +121,55 @@ export function UrlLinkTool({ selectedAppId, settings, onSelectApp, urlLinkResul
             <Link className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="bento-card-title">URL Link 生成</h3>
-            <p className="text-xs text-muted-foreground">生成微信小程序 URL Link</p>
+            <h3 className="bento-card-title">{t("urlLinkTool.title")}</h3>
+            <p className="text-xs text-muted-foreground">Generate WeChat Mini Program URL Link</p>
           </div>
         </div>
 
         <div className="bento-card-content space-y-4">
           {/* App Selection */}
           <div className="space-y-2">
-            <label className="label">选择小程序</label>
+            <label className="label">{t("urlLinkTool.selectConfig")}</label>
             <select
               value={selectedAppId}
               onChange={(e) => onSelectApp(e.target.value)}
               className="input"
             >
-              <option value="">请选择小程序...</option>
+              <option value="">{t("urlLinkTool.selectMiniProgram")}...</option>
               {settings.mini_apps.map((app) => (
                 <option key={app.id} value={app.id}>
-                  {app.name} {settings.default_app_id === app.id ? "(默认)" : ""}
+                  {app.name} {settings.default_app_id === app.id ? "(Default)" : ""}
                 </option>
               ))}
             </select>
             {selectedApp && (
               <div className="text-xs text-muted-foreground">
-                AppID: {selectedApp.appid}
+                {t("settings.appId")}: {selectedApp.appid}
               </div>
             )}
           </div>
 
           {/* Env Version */}
           <div className="space-y-2">
-            <label className="label">版本</label>
+            <label className="label">{t("urlLinkTool.version")}</label>
             <select
               value={envVersion}
               onChange={(e) => setEnvVersion(e.target.value)}
               className="input"
             >
-              <option value="release">正式版 (release)</option>
-              <option value="develop">开发版 (develop)</option>
-              <option value="trial">体验版 (trial)</option>
+              <option value="release">Release</option>
+              <option value="develop">Develop</option>
+              <option value="trial">Trial</option>
             </select>
           </div>
 
           {/* Items List */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <label className="label">路径与参数配置</label>
+              <label className="label">{t("urlLinkTool.pathAndParams")}</label>
               <button onClick={addItem} className="button-ghost text-xs">
                 <Plus className="w-4 h-4 mr-1" />
-                添加
+                {t("urlLinkTool.add")}
               </button>
             </div>
 
@@ -177,14 +179,14 @@ export function UrlLinkTool({ selectedAppId, settings, onSelectApp, urlLinkResul
                   <input
                     type="text"
                     className="input"
-                    placeholder="路径 (例如: pages/index)"
+                    placeholder={t("urlLinkTool.pathPlaceholder")}
                     value={item.path}
                     onChange={(e) => updateItem(index, "path", e.target.value)}
                   />
                   <input
                     type="text"
                     className="input"
-                    placeholder="查询参数 (例如: id=123)"
+                    placeholder={t("urlLinkTool.queryPlaceholder")}
                     value={item.query}
                     onChange={(e) => updateItem(index, "query", e.target.value)}
                   />
@@ -210,12 +212,12 @@ export function UrlLinkTool({ selectedAppId, settings, onSelectApp, urlLinkResul
               {loading ? (
                 <>
                   <span className="animate-spin mr-2">⏳</span>
-                  生成中...
+                  {t("urlLinkTool.generating")}...
                 </>
               ) : (
                 <>
                   <ArrowRight className="w-4 h-4 mr-2" />
-                  生成 URL Link
+                  {t("urlLinkTool.generate")}
                 </>
               )}
             </button>
@@ -225,17 +227,17 @@ export function UrlLinkTool({ selectedAppId, settings, onSelectApp, urlLinkResul
           {urlLinkResults.length > 0 && (
             <div className="space-y-3 pt-4 border-t">
               <div className="flex items-center justify-between">
-                <label className="label">生成结果</label>
+                <label className="label">{t("urlLinkTool.generatedLink")}</label>
                 <button onClick={copyAllLinks} className="button-ghost text-xs">
                   {copied ? (
                     <>
                       <Check className="w-4 h-4 mr-1" />
-                      已复制
+                      {t("urlLinkTool.copied")}
                     </>
                   ) : (
                     <>
                       <Copy className="w-4 h-4 mr-1" />
-                      复制全部
+                      {t("urlLinkTool.copyAll")}
                     </>
                   )}
                 </button>
@@ -259,7 +261,7 @@ export function UrlLinkTool({ selectedAppId, settings, onSelectApp, urlLinkResul
                         </div>
                       ) : (
                         <div className="text-sm text-destructive">
-                          失败: {result.err_msg}
+                          {t("urlLinkTool.failed")}: {result.err_msg}
                         </div>
                       )}
                     </div>

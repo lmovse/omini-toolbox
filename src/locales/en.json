@@ -1,0 +1,73 @@
+{
+  "app": {
+    "title": "Omini ToolBox"
+  },
+  "nav": {
+    "home": "Home",
+    "settings": "Settings"
+  },
+  "home": {
+    "title": "Tools",
+    "comingSoon": "Coming Soon"
+  },
+  "settings": {
+    "title": "Settings",
+    "general": "General",
+    "wechat": "WeChat",
+    "about": "About",
+    "theme": "Theme",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeSystem": "System",
+    "language": "Language",
+    "languageEn": "English",
+    "languageZh": "中文",
+    "miniProgramConfig": "Mini Program Configuration",
+    "addConfig": "Add Configuration",
+    "appId": "AppID",
+    "appSecret": "AppSecret",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "version": "Version",
+    "aboutDesc": "A cross-platform desktop toolbox built with Tauri + React",
+    "editMiniApp": "Edit Mini Program",
+    "name": "Name",
+    "setAsDefault": "Set as Default",
+    "cancelDefault": "Cancel Default"
+  },
+  "urlLinkTool": {
+    "title": "Generate URL Link",
+    "selectConfig": "Select Mini Program",
+    "path": "Path",
+    "pathPlaceholder": "/pages/index/index",
+    "query": "Query (optional)",
+    "queryPlaceholder": "key1=value1&key2=value2",
+    "generate": "Generate",
+    "generatedLink": "Generated Link",
+    "copyLink": "Copy Link",
+    "copySuccess": "Copied to clipboard",
+    "generateFailed": "Generation failed",
+    "expireDate": "Expire Date",
+    "oneDay": "1 Day",
+    "sevenDays": "7 Days",
+    "thirtyDays": "30 Days",
+    "ninetyDays": "90 Days",
+    "selectMiniProgram": "Please select a Mini Program",
+    "fillAtLeastOnePath": "Please fill in at least one path",
+    "generating": "Generating",
+    "copyAll": "Copy All",
+    "copied": "Copied",
+    "version": "Version",
+    "pathAndParams": "Path & Parameters",
+    "add": "Add",
+    "failed": "Failed"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "failed": "Failed"
+  }
+}

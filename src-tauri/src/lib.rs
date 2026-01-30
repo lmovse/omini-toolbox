@@ -26,6 +26,7 @@ pub struct AppSettings {
     pub mini_apps: Vec<MiniAppConfig>,
     pub default_app_id: Option<String>,
     pub theme: Option<String>, // "light", "dark", 或 "system"
+    pub language: Option<String>, // "en" 或 "zh-CN"
 }
 
 #[derive(Serialize, Deserialize)]
@@ -103,6 +104,7 @@ fn load_settings() -> Result<AppSettings, String> {
             mini_apps: Vec::new(),
             default_app_id: None,
             theme: None,
+            language: None,
         });
     }
 

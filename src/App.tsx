@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { invoke } from "@tauri-apps/api/core";
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { Settings as SettingsIcon } from "lucide-react";
@@ -29,6 +30,7 @@ interface AppSettings {
   mini_apps: MiniAppConfig[];
   default_app_id: string | null;
   theme: "light" | "dark" | "system" | null;
+  language: string | null;
 }
 
 type SettingsSection = "general" | "wechat" | "about";
@@ -41,6 +43,7 @@ interface UrlLinkResult {
 }
 
 function App() {
+  const { i18n } = useTranslation();
   const [currentPage, setCurrentPage] = useState<"home" | "settings">("home");
   const [activeTool, setActiveTool] = useState<string>("urllink");
   const [selectedAppId, setSelectedAppId] = useState<string>("");
@@ -52,6 +55,7 @@ function App() {
     mini_apps: [],
     default_app_id: null,
     theme: null,
+    language: null,
   });
 
   // Theme state
@@ -113,6 +117,9 @@ function App() {
       if (loaded.theme) {
         setTheme(loaded.theme as "light" | "dark" | "system");
       }
+      if (loaded.language) {
+        i18n.changeLanguage(loaded.language);
+      }
     } catch (error) {
       console.error("加载设置失败:", error);
     }
@@ -133,6 +140,15 @@ function App() {
     const newSettings: AppSettings = {
       ...settings,
       theme: newTheme,
+    };
+    await saveSettings(newSettings);
+  };
+
+  const updateLanguage = async (lng: string) => {
+    i18n.changeLanguage(lng);
+    const newSettings: AppSettings = {
+      ...settings,
+      language: lng,
     };
     await saveSettings(newSettings);
   };
@@ -204,6 +220,8 @@ function App() {
                 activeSettingsSection={activeSettingsSection}
                 onUpdateSettings={saveSettings}
                 onUpdateTheme={updateTheme}
+                onUpdateLanguage={updateLanguage}
+                currentLanguage={i18n.language}
                 onSetActiveSection={(section) => setActiveSettingsSection(section as SettingsSection)}
                 onGoHome={() => setCurrentPage("home")}
                 onSelectApp={setSelectedAppId}
