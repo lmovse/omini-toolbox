@@ -30,45 +30,61 @@ A cross-platform desktop toolbox application built with Tauri + React.
 
 - Node.js >= 18
 - Rust >= 1.70
+- Pnpm >= 8
 - Tauri CLI
 
 ### Install Dependencies
 
 ```bash
-npm install
+pnpm install
 ```
 
 ### Development Mode
 
 ```bash
-npm run dev
+pnpm tauri dev
 ```
 
 ### Build Application
 
 ```bash
-# Build for all platforms
-npm run build
-
-# Build for specific platform
-npm run build:linux
-npm run build:macos
-npm run build:windows
+pnpm tauri build
 ```
 
 ## Project Structure
 
 ```
 omini-toolbox/
-├── src/                    # Frontend React code
-│   ├── main.tsx           # Application entry
-│   ├── App.tsx            # Main application component
-│   ├── pages/             # Page components
-│   └── components/        # Shared components
-├── src-tauri/             # Tauri backend (Rust)
-│   ├── src/
-│   └── tauri.conf.json
-└── package.json
+├── src/                          # Frontend React code
+│   ├── main.tsx                  # Application entry
+│   ├── App.tsx                   # Main application component
+│   ├── index.css                 # Global styles
+│   ├── pages/                    # Page components
+│   │   ├── Home.tsx              # Home page
+│   │   └── Settings.tsx          # Settings page
+│   ├── components/               # Shared components
+│   │   ├── tools/                # Tool components
+│   │   │   └── UrlLinkTool.tsx   # URL Link generator
+│   │   ├── ToolCard.tsx          # Tool card
+│   │   └── ComingSoon.tsx        # Coming soon placeholder
+│   └── assets/                   # Static assets
+├── src-tauri/                    # Tauri backend (Rust)
+│   ├── src/                      # Rust source
+│   │   ├── main.rs               # Entry point
+│   │   └── lib.rs                # Core logic
+│   ├── capabilities/             # Capability definitions
+│   ├── gen/                      # Generated code
+│   ├── icons/                    # App icons
+│   ├── build.rs                  # Build script
+│   ├── Cargo.toml                # Rust dependencies
+│   └── tauri.conf.json           # Tauri configuration
+├── public/                       # Public static files
+├── docs/                         # Documentation & screenshots
+├── index.html                    # HTML entry
+├── package.json                  # Node dependencies
+├── vite.config.ts                # Vite configuration
+├── tailwind.config.js            # Tailwind CSS configuration
+└── tsconfig.json                 # TypeScript configuration
 ```
 
 ## Roadmap
