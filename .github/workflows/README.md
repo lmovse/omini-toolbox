@@ -114,6 +114,20 @@ git push origin main
 
 ## ⚙️ 核心改动说明
 
+### ⚠️ 重要：tauri-action 版本更新
+
+**tauri-apps/tauri-action@v1 已停用**，已更新为 **v0**
+
+```yaml
+# 旧的（不工作）
+- uses: tauri-apps/tauri-action@v1
+
+# 新的（推荐）
+- uses: tauri-apps/tauri-action@v0
+```
+
+详见：[TAURI_ACTION_VERSION.md](./TAURI_ACTION_VERSION.md)
+
 ### 相比原始 npm 版本的主要改动
 
 #### 1️⃣ pnpm 安装（所有 workflow 通用）
