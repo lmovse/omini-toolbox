@@ -69,7 +69,7 @@ fn get_config_dir() -> PathBuf {
 
     #[cfg(target_os = "windows")]
     let mut dir = PathBuf::from(
-        std::env::var("APPDATA").unwrap_or_else(|_| ".")
+        std::env::var("APPDATA").unwrap_or_else(|_| ".".to_string())
     );
     #[cfg(target_os = "windows")]
     dir.push("tata-tool");
