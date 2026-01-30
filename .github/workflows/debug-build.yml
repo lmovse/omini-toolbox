@@ -1,0 +1,108 @@
+name: 'debug-build'
+
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: 'Platform to build'
+        required: true
+        default: 'ubuntu-22.04'
+        type: choice
+        options:
+          - ubuntu-22.04
+          - macos-latest
+          - windows-latest
+      debug_mode:
+        description: 'Enable debug logging'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  debug-build:
+    runs-on: ${{ github.event.inputs.platform }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
+
+      - name: Install dependencies (Ubuntu only)
+        if: github.event.inputs.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            libappindicator3-dev \
+            librsvg2-dev \
+            patchelf
+
+      - name: Print environment info
+        run: |
+          echo "=== System Info ==="
+          echo "Platform: ${{ github.event.inputs.platform }}"
+          echo "Runner: ${{ runner.os }}"
+          echo ""
+          echo "=== Node Info ==="
+          node --version
+          npm --version
+          echo ""
+          echo "=== Rust Info ==="
+          rustc --version
+          cargo --version
+          echo ""
+          echo "=== Directory Structure ==="
+          ls -la src-tauri/
+          ls -la
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Check Cargo.toml
+        run: |
+          echo "=== Cargo.toml ==="
+          cat src-tauri/Cargo.toml
+
+      - name: Check tauri.conf.json
+        run: |
+          echo "=== tauri.conf.json ==="
+          cat src-tauri/tauri.conf.json
+
+      - name: Check for TypeScript errors
+        run: |
+          npm run type-check 2>&1 || true
+
+      - name: Cargo build verbose
+        run: |
+          cd src-tauri
+          cargo build -vvv 2>&1 | head -200
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Build Tauri (debug)
+        uses: tauri-apps/tauri-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          args: '--debug'
+
+      - name: Upload debug logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-logs-${{ github.event.inputs.platform }}
+          path: |
+            src-tauri/target/
+          retention-days: 5
