@@ -20,33 +20,28 @@ omini-toolbox/
 ### 1. `publish.yml` - 发布构建
 
 **触发条件：**
-
 - 推送到 `main` 或 `release` 分支
 - 创建 `v*` 标签（如 `v1.0.0`）
 - 手动触发（workflow_dispatch）
 
 **功能：**
-
 - 在 macOS、Ubuntu、Windows 上构建应用
 - 自动创建 GitHub Release
 - 上传构建产物（dmg、exe、AppImage 等）
 - 支持 macOS universal binary（ARM64 + x86_64）
 
 **输出物：**
-
 - 各平台的可执行文件
 - 工作流工件（Workflow Artifacts）
 
 ### 2. `test-build.yml` - 测试构建
 
 **触发条件：**
-
 - 推送到 `main` 或 `develop` 分支
 - Pull Request 到 `main` 或 `develop`
 - 手动触发
 
 **功能：**
-
 - 编译检查（`cargo check`）
 - 调试模式构建
 - TypeScript 类型检查
@@ -67,6 +62,28 @@ omini-toolbox/
   }
 }
 ```
+
+同时确保项目根目录有 `pnpm-lock.yaml` 文件。
+
+### pnpm 特定说明
+
+本项目使用 pnpm 作为包管理器。Workflow 中的配置包括：
+
+1. **自动安装 pnpm：**
+   ```yaml
+   - uses: pnpm/action-setup@v2
+     with:
+       version: latest
+   ```
+
+2. **pnpm 存储缓存：**
+   Workflow 会自动缓存 pnpm 的 store，加速后续构建
+
+3. **使用 frozen-lockfile：**
+   ```bash
+   pnpm install --frozen-lockfile
+   ```
+   确保依赖版本与 lock 文件完全一致
 
 ### 步骤 2：复制 Workflow 文件
 
