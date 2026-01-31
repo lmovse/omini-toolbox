@@ -8,6 +8,9 @@ import { Home } from "./pages/Home";
 import { Settings } from "./pages/Settings";
 import { tools } from "./components/ToolCard";
 
+// 检测是否是 Windows 系统
+const isWindows = navigator.userAgent.indexOf("Win") !== -1;
+
 // 拖动处理函数
 function handleHeaderClick(e: React.MouseEvent) {
   if (e.button !== 0) return;
@@ -157,7 +160,7 @@ function App() {
     <div className="h-screen bg-background flex flex-col">
       {/* Header */}
       <header
-        className="flex-shrink-0 h-14 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50 pl-20"
+        className={`flex-shrink-0 h-14 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50 ${isWindows ? "" : "pl-20"}`}
         onMouseDown={handleHeaderClick}
       >
         <div className="h-full px-6 flex items-center justify-between">
