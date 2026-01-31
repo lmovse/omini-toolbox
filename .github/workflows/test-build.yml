@@ -3,11 +3,11 @@ name: 'test-build'
 on:
   push:
     branches:
-      - main
+      # - main
       - develop
   pull_request:
     branches:
-      - main
+      # - main
       - develop
   workflow_dispatch:
 

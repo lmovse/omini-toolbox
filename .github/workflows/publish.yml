@@ -27,9 +27,9 @@ jobs:
             args: '--target x86_64-apple-darwin'
             artifact_suffix: 'macos-x86_64'
           # Linux build
-          - platform: 'ubuntu-22.04'
-            args: ''
-            artifact_suffix: 'linux-x86_64'
+          # - platform: 'ubuntu-22.04'
+          #   args: ''
+          #   artifact_suffix: 'linux-x86_64'
           # Windows build
           - platform: 'windows-latest'
             args: ''
