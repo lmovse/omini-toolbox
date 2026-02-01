@@ -69,7 +69,9 @@
     "version": "Version",
     "pathAndParams": "Path & Parameters",
     "add": "Add",
-    "failed": "Failed"
+    "failed": "Failed",
+    "name": "Name",
+    "editMiniApp": "Edit Mini Program"
   },
   "common": {
     "loading": "Loading...",

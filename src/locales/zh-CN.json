@@ -69,7 +69,9 @@
     "version": "版本",
     "pathAndParams": "路径与参数配置",
     "add": "添加",
-    "failed": "失败"
+    "failed": "失败",
+    "name": "名称",
+    "editMiniApp": "编辑小程序"
   },
   "common": {
     "loading": "加载中...",
