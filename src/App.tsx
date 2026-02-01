@@ -7,6 +7,8 @@ import { Settings as SettingsIcon } from "lucide-react";
 import { Home } from "./pages/Home";
 import { Settings } from "./pages/Settings";
 import { tools } from "./components/ToolCard";
+import { ErrorProvider, useError } from "./components/ErrorBoundary";
+import { ErrorPopup, setErrorPopupTrigger } from "./components/ErrorPopup";
 
 // 检测是否是 Windows 系统
 const isWindows = navigator.userAgent.indexOf("Win") !== -1;
@@ -45,13 +47,16 @@ interface UrlLinkResult {
   err_msg: string;
 }
 
-function App() {
+function AppContent() {
   const { i18n } = useTranslation();
   const [currentPage, setCurrentPage] = useState<"home" | "settings">("home");
   const [activeTool, setActiveTool] = useState<string>("urllink");
   const [selectedAppId, setSelectedAppId] = useState<string>("");
   const [activeSettingsSection, setActiveSettingsSection] = useState<SettingsSection>("wechat");
   const [urlLinkResults, setUrlLinkResults] = useState<UrlLinkResult[]>([]);
+  const [showErrorPopup, setShowErrorPopup] = useState(false);
+  const { addError } = useError();
+  void addError; // 保留以供全局错误捕获使用
 
   // Settings state
   const [settings, setSettings] = useState<AppSettings>({
@@ -173,6 +178,7 @@ function App() {
           <button
             onClick={() => setCurrentPage("settings")}
             className="button-ghost"
+            data-tauri-drag-region="false"
           >
             <SettingsIcon className="w-5 h-5" />
           </button>
@@ -233,7 +239,25 @@ function App() {
           </div>
         </main>
       </div>
+
+      {/* Error Popup */}
+      <ErrorPopup isOpen={showErrorPopup} onClose={() => setShowErrorPopup(false)} />
     </div>
+  );
+}
+
+function App() {
+  // 设置错误弹窗触发器
+  useEffect(() => {
+    setErrorPopupTrigger(() => {
+      // 这个函数会在任何地方被调用来显示错误弹窗
+    });
+  }, []);
+
+  return (
+    <ErrorProvider>
+      <AppContent />
+    </ErrorProvider>
   );
 }
 

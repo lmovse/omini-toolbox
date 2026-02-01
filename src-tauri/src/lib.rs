@@ -3,8 +3,12 @@ use std::fs;
 use std::path::PathBuf;
 use std::sync::Mutex;
 use once_cell::sync::Lazy;
+use std::backtrace::Backtrace;
 
-#[derive(Serialize, Deserialize)]
+mod logger;
+use logger::{log_error, init_logs};
+
+#[derive(Serialize, Deserialize, Clone)]
 pub struct UrlLinkResult {
     pub path: String,
     pub query: String,
@@ -59,20 +63,20 @@ struct TokenCache {
 static TOKEN_CACHE: Lazy<Mutex<Option<TokenCache>>> = Lazy::new(|| Mutex::new(None));
 
 /// 获取应用配置目录
-fn get_config_dir() -> PathBuf {
+pub fn get_config_dir() -> PathBuf {
     #[cfg(target_os = "macos")]
     let mut dir = PathBuf::from(
         std::env::var("HOME").unwrap_or_else(|_| ".".to_string())
     );
     #[cfg(target_os = "macos")]
-    dir.push("Library/Application Support/tata-tool");
+    dir.push("Library/Application Support/omini-toolbox");
 
     #[cfg(target_os = "windows")]
     let mut dir = PathBuf::from(
         std::env::var("APPDATA").unwrap_or_else(|_| ".".to_string())
     );
     #[cfg(target_os = "windows")]
-    dir.push("tata-tool");
+    dir.push("omini-toolbox");
 
     #[cfg(target_os = "linux")]
     let mut dir = PathBuf::from(
@@ -81,7 +85,7 @@ fn get_config_dir() -> PathBuf {
         })
     );
     #[cfg(target_os = "linux")]
-    dir.push("tata-tool");
+    dir.push("omini-toolbox");
 
     if !dir.exists() {
         let _ = fs::create_dir_all(&dir);
@@ -303,8 +307,19 @@ async fn generate_wechat_urllinks(
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    // 初始化日志系统
+    init_logs();
+
+    // 设置 panic hook
+    std::panic::set_hook(Box::new(|panic_info| {
+        let message = panic_info.to_string();
+        let backtrace = Backtrace::capture();
+        log_error(&message, Some(&format!("{:?}", backtrace)), "error", "backend");
+    }));
+
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
+        .plugin(logger::generate_commands())
         .invoke_handler(tauri::generate_handler![
             generate_wechat_urllinks,
             load_settings,
