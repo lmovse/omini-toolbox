@@ -4,6 +4,7 @@ use std::path::PathBuf;
 use std::sync::Mutex;
 use once_cell::sync::Lazy;
 use std::backtrace::Backtrace;
+use log::info;
 
 mod logger;
 use logger::{log_error, init_logs};
@@ -203,7 +204,7 @@ async fn get_wechat_token_cached(appid: &str, secret: &str) -> Result<String, St
         "appid": appid,
         "secret": "***"
     });
-    println!("[WeChat] POST https://api.weixin.qq.com/cgi-bin/stable_token, body={}", serde_json::to_string(&body).unwrap());
+    info!("[WeChat] POST https://api.weixin.qq.com/cgi-bin/stable_token, body={}", serde_json::to_string(&body).unwrap());
 
     let client = reqwest::Client::new();
     let response = client
@@ -219,7 +220,7 @@ async fn get_wechat_token_cached(appid: &str, secret: &str) -> Result<String, St
         .map_err(|e| format!("请求 token 失败: {}", e))?;
 
     let text = response.text().await.map_err(|e| format!("读取 token 响应失败: {}", e))?;
-    println!("[WeChat] access_token response: {}", text);
+    info!("[WeChat] access_token response: {}", text);
 
     let token_resp: WechatTokenResponse = serde_json::from_str(&text)
         .map_err(|e| format!("解析 token 响应失败: {}", e))?;
@@ -278,7 +279,7 @@ async fn generate_wechat_urllinks(
             "query": item.query,
             "env_version": env_version
         });
-        println!("[WeChat] POST https://api.weixin.qq.com/wxa/generate_urllink?access_token=***, body={}", serde_json::to_string(&body).unwrap());
+        info!("[WeChat] POST https://api.weixin.qq.com/wxa/generate_urllink?access_token=***, body={}", serde_json::to_string(&body).unwrap());
 
         let response = client
             .post(&format!("https://api.weixin.qq.com/wxa/generate_urllink?access_token={}", token))
@@ -289,7 +290,7 @@ async fn generate_wechat_urllinks(
             .map_err(|e| format!("请求失败: {}", e))?;
 
         let text = response.text().await.map_err(|e| format!("读取响应失败: {}", e))?;
-        println!("[WeChat] urllink response: {}", text);
+        info!("[WeChat] urllink response: {}", text);
 
         let link_resp: WechatUrlLinkResponse = serde_json::from_str(&text)
             .map_err(|e| format!("解析响应失败: {}", e))?;
