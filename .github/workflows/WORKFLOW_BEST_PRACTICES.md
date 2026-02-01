@@ -3,16 +3,19 @@
 ## 🎯 核心原则
 
 ### 1. 快速反馈
+
 - 尽早检测问题
 - 并行运行不相关的任务
 - 使用缓存加速构建
 
 ### 2. 可靠性
+
 - 处理瞬时故障（重试）
 - 明确的错误消息
 - 完整的日志和工件
 
 ### 3. 成本效益
+
 - 只在必要时运行昂贵的操作
 - 合理使用 GitHub 免费配额
 - 优化 runner 成本
@@ -106,11 +109,13 @@ strategy:
 ### 调试技巧
 
 1. **使用 debug workflow：**
+
    ```bash
    # 可以手动输入参数运行
    ```
 
 2. **启用 SSH 调试：**
+
    ```yaml
    - name: Setup tmate session
      if: failure()
@@ -118,6 +123,7 @@ strategy:
    ```
 
 3. **保存工件用于分析：**
+
    ```yaml
    - name: Upload logs on failure
      if: failure()
@@ -141,12 +147,14 @@ permissions:
 ### 2. 保护敏感信息
 
 ❌ 不要：
+
 ```yaml
 env:
   SIGNING_KEY: abc123def456
 ```
 
 ✅ 要这样做：
+
 ```yaml
 env:
   SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
@@ -193,6 +201,7 @@ v1.2.3
    - Git 标签版本
 
 2. **使用 Changelog：**
+
    ```markdown
    ## [1.2.3] - 2025-01-30
    ### Added
@@ -202,6 +211,7 @@ v1.2.3
    ```
 
 3. **发布前检查清单：**
+
    ```bash
    - [ ] 更新 CHANGELOG
    - [ ] 更新版本号
@@ -342,24 +352,28 @@ git push origin v1.2.3
 ## ✅ 完整检查清单
 
 ### 初始设置
+
 - [ ] 创建 `.github/workflows/` 目录
 - [ ] 添加 workflow 文件
 - [ ] 配置仓库权限
 - [ ] 测试本地构建
 
 ### 优化
+
 - [ ] 启用 Rust 缓存
 - [ ] 启用 Node 缓存
 - [ ] 配置并行构建
 - [ ] 设置正确的 retention-days
 
 ### 安全
+
 - [ ] 限制 token 权限
 - [ ] 使用 Secrets 管理敏感信息
 - [ ] 审核依赖安全性
 - [ ] 启用分支保护
 
 ### 文档
+
 - [ ] 编写 CHANGELOG
 - [ ] 记录发布流程
 - [ ] 创建故障排查指南

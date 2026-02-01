@@ -2,9 +2,9 @@ name: 'publish'
 
 on:
   push:
-    branches:
-      - main
-      - release
+    # branches:
+    #   - main
+    #   - release
     tags:
       - 'v*'
   workflow_dispatch:  # 允许手动触发
@@ -98,8 +98,6 @@ jobs:
           releaseDraft: false
           prerelease: false
           args: ${{ matrix.args }}
-          uploadWorkflowArtifacts: true
-          workflowArtifactNamePattern: 'omini-toolbox-${{ matrix.artifact_suffix }}-[bundle]'
 
   # 可选：创建发布摘要
   create-release-summary:
