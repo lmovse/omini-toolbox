@@ -71,7 +71,14 @@
     "add": "Add",
     "failed": "Failed",
     "name": "Name",
-    "editMiniApp": "Edit Mini Program"
+    "editMiniApp": "Edit Mini Program",
+    "import": "Import",
+    "importTitle": "Batch Import URLs",
+    "importDesc": "Paste URL list directly, one per line. The system will automatically parse paths and parameters.",
+    "importPlaceholder": "One URL per line:\n/pages/perform/index?proNo=10005311&utm_source=toufang1\n/pages/perform/index?proNo=10005311&utm_source=toufang2\n/pages/detail/index?name=test",
+    "exportCsv": "Export CSV",
+    "exportSuccess": "Exported successfully",
+    "noDataToExport": "No data to export"
   },
   "common": {
     "loading": "Loading...",

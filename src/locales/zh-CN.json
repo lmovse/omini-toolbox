@@ -71,7 +71,14 @@
     "add": "添加",
     "failed": "失败",
     "name": "名称",
-    "editMiniApp": "编辑小程序"
+    "editMiniApp": "编辑小程序",
+    "import": "一键导入",
+    "importTitle": "批量导入 URL",
+    "importDesc": "直接粘贴 URL 列表，每行一个，系统将自动解析路径和参数",
+    "importPlaceholder": "每行一个 URL：\n/pages/perform/index?proNo=10005311&utm_source=toufang1\n/pages/perform/index?proNo=10005311&utm_source=toufang2\n/pages/detail/index?name=test",
+    "exportCsv": "导出 CSV",
+    "exportSuccess": "导出成功",
+    "noDataToExport": "没有可导出的数据"
   },
   "common": {
     "loading": "加载中...",

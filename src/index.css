@@ -125,6 +125,10 @@
   @apply button hover:bg-accent hover:text-accent-foreground;
 }
 
+.button-sm {
+  @apply h-8 px-3 text-xs;
+}
+
 /* Label */
 .label {
   @apply text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70;
